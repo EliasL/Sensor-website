@@ -1,0 +1,12 @@
+before_script: cd go
+
+language: go
+sudo: false
+
+stages:
+  - compile
+  - deploy
+    
+script:
+  - go get -t -v ./...
+  - go test

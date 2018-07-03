@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Elias Lundheim">
+    <link rel="icon" href="files/images/icon.png">
+
+    <title>Sensorer</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="files/js/Bootstrap/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="files/js/Bootstrap/dashboard.css" rel="stylesheet">
+    <style>
+
+        canvas {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+    </style>
+
+    <style>
+        .custom-space {
+            border: 0;
+            height: 1px;
+            background: #333;
+            background-image: linear-gradient(to right, #ccc, #333, #ccc);
+        }
+    </style>
+
+</head>
+
+<body>
+    <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="overview.html">Overview</a>
+        <ul class="navbar-nav px-3">
+            <li class="nav-item text-nowrap">
+                <a class="nav-link" href="about.html">About the project</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="container-fluid">
+        <div id="sensorTab"></div>
+    </div>
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 mx-auto">
+        <div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <div class="container-fluid">
+            <div class="col-md-7 p-10 mx-auto my-10">
+                    <h1 class="display-5 font-weight-normal">Comparing low power sensors</h1>
+                    <h2 class="display-5 font-weight-normal">The website</h2>
+                    <body><div class="mxgraph" style="max-width:100%;border:1px solid transparent;" data-mxgraph="{&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;toolbar&quot;:&quot;layers lightbox&quot;,&quot;url&quot;:&quot;https://drive.google.com/uc?id=13x8r8NJCNBQDjnW06a5Da9pMHzPFaomk&amp;export=download&quot;}"></div>
+                        <script type="text/javascript" src="https://www.draw.io/embed2.js?&fetch=https%3A%2F%2Fdrive.google.com%2Fuc%3Fid%3D13x8r8NJCNBQDjnW06a5Da9pMHzPFaomk%26export%3Ddownload"></script>
+                        <p>
+                        This project began with getting sensors to work. Since we wanted to display the sensor data, we began work on this website soon after.<br>
+                        The website started as a simple copy of the <a href="https://getbootstrap.com/docs/4.1/examples/dashboard/">Bootstrap Dashboard template</a>, and was quickly modified from there.
+                        We set up a server provided by <a href="https://www.digitalocean.com">Digital Ocean</a>, and used <a href="https://www.nginx.com/">Nginx</a> to host the website.
+                        After obtaining a domain from <a href="http://www.freenom.com/">Freenom</a>, we were able to enable an ssl and https connection.
+                        On the same server, we setup a <a href="https://www.mysql.com/">Mysql</a> database, and after writing a small python script, we would pull and push data, storing it in our own database.
+                        Since connecting the front end directly to the database is a huge security breach, and because of that, almost difficult to do with all the security regulations put in by various browsers and libraries,
+                        we created a <a href="https://golang.org/">Go</a> backend that connected to our front with a <a href="http://www.gorillatoolkit.org/">Gorilla</a> <a href="https://github.com/gorilla/websocket">wss</a> connection. <br>
+                        Most of the things mentioned here are explained in detail by various tutorials from <a href="https://www.digitalocean.com">Digital Ocean</a>, and many other places (We mostly used Digital ocean tutorials).
+                        
+                        There are quite a few smaller steps to this process that have been skipped and/or forgotten, but the ones mentioned covers the essentials of the website.
+                        The project is publicly available <a href="https://github.com/EliasL/Sensor-website">here</a>.
+                    </p>
+                </div>
+            </div>
+    </main>
+
+    <script scr="files/js/Bootstrap/jquery.js"></script>
+    <script>window.jQuery || document.write('<script src="files/js/Bootstrap/jquery.js"><\/script>')</script>
+    <script src="files/js/Bootstrap/popper.js"></script>
+    <script src="files/js/Bootstrap/bootstrap.js"></script>
+ 
+    <script src="files/js/core.js"></script>
+    <script>
+        createSidebar();
+        folderLogic();
+    </script>    
+    
+</body></html>
