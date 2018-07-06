@@ -157,8 +157,11 @@ var sensorFolders = [
         {name: "Air temp 2",      id: "20004936"}
     ]},
 
-    {folderName: "Something else", sensors: [
-         {name: "New sensor", id: "12043987120349817234986"}
+    {folderName: "Telenor", sensors: [
+         {name: "Node 1", id: "357517080049085"}
+    ]},
+    {folderName: "The Things Netowrk", sensors:[
+        {name: "Power Compare", id: "power_compare"}
     ]}
 ];
 

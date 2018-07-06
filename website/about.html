@@ -64,9 +64,9 @@
                         The website started as a simple copy of the <a href="https://getbootstrap.com/docs/4.1/examples/dashboard/">Bootstrap Dashboard template</a>, and was quickly modified from there.
                         We set up a server provided by <a href="https://www.digitalocean.com">Digital Ocean</a>, and used <a href="https://www.nginx.com/">Nginx</a> to host the website.
                         After obtaining a domain from <a href="http://www.freenom.com/">Freenom</a>, we were able to enable an ssl and https connection.
-                        On the same server, we setup a <a href="https://www.mysql.com/">Mysql</a> database, and after writing a small python script, we would pull and push data, storing it in our own database.
+                        On the same server, we setup a <a href="https://www.mysql.com/">Mysql</a> database, and after writing a small Go script, we would pull and push data, storing it in our own database.
                         Since connecting the front end directly to the database is a huge security breach, and because of that, almost difficult to do with all the security regulations put in by various browsers and libraries,
-                        we created a <a href="https://golang.org/">Go</a> backend that connected to our front with a <a href="http://www.gorillatoolkit.org/">Gorilla</a> <a href="https://github.com/gorilla/websocket">wss</a> connection. <br>
+                        we created a Go backend that connected to our front with a <a href="http://www.gorillatoolkit.org/">Gorilla</a> <a href="https://github.com/gorilla/websocket">wss</a> connection. <br>
                         Most of the things mentioned here are explained in detail by various tutorials from <a href="https://www.digitalocean.com">Digital Ocean</a>, and many other places (We mostly used Digital ocean tutorials).
                         
                         There are quite a few smaller steps to this process that have been skipped and/or forgotten, but the ones mentioned covers the essentials of the website.
