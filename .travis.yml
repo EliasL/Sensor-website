@@ -1,4 +1,4 @@
-before_script: cd go
+before_script: cd backend
 
 language: go
 sudo: false
