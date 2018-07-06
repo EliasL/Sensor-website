@@ -110,6 +110,7 @@
         }
 
         function sendTfRequest() {
+            checkSocket("message", handleNewData);
             loadingData = true;
             document.getElementById("sensorName").innerHTML = "Loading data..."
             sendTimeframeRequest(sensorID(), timeframe);
@@ -121,7 +122,7 @@
             resetChartZoom(window.chart);
         }
 
-        function setTimeframe(string){
+        function setTimeframe(string){            
             document.getElementById("dropdownMenuButton").innerHTML = string
                 timeframe = string
                 updateTimeframeText();
@@ -189,7 +190,7 @@
         var jsonData;
 
         //Initialisation
-        ws.addEventListener("message", handleNewData);
+        checkSocket("message", handleNewData);
         updateTimeframeText();
         updateSensorNameText();
 

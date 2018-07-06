@@ -1,23 +1,32 @@
-ws = new WebSocket("wss://lowpowersensor.tk:8080");
-ws.onopen = function(evt) {
-    console.log("OPEN");
-}
-ws.onclose = function(evt) {
-    console.log("CLOSE");
-    ws = null;
-}
-
-ws.onerror = function(evt) {
-    console.log("ERROR: " + evt.data);
-}
+var ws;
 
 function sendTimeframeRequest(sensorID, timeframe) {
     tableName = "sensor_"+sensorID
     dates = timeframeToArg(timeframe)
     sendMessage("get, elwatchTableTimeframe, " + tableName + ", " + dates[0] + ", " + dates[1]);
 }
+
+function checkSocket(message, handleFunc){
+    //Check if socet is open
+    if(ws == null){
+        ws = new WebSocket("wss://lowpowersensor.tk:8080");
+        ws.addEventListener(message, handleFunc);
+        ws.onopen = function(evt) {
+            console.log("OPEN");
+        }
+        ws.onclose = function(evt) {
+            console.log("CLOSE");
+            ws = null;
+        }
+        ws.onerror = function(evt) {
+            console.log("ERROR: " + evt.data);
+        }
+    }
+}
+
 function sendMessage(msg){
     console.log("Attempt send message")
+
     console.log("Waiting for socket...")
     // Wait until the state of the socket is not ready and send the message when it is...
     waitForSocketConnection(ws, function(){

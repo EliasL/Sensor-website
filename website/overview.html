@@ -85,8 +85,8 @@
     <script>
         var currentLoadingIndex = 0;
         bigChart = false;
-
-        ws.addEventListener("message", updateCharts);
+        
+        checkSocket("message", handleNewData);
 
         function sendTfRequest() {
             sendTimeframeRequest(sensors[currentLoadingIndex].id, "One hour");
@@ -119,6 +119,7 @@
             //Prepare to load the next one
             currentLoadingIndex += 1;
             if (currentLoadingIndex < sensors.length) {
+                checkSocket("message", updateCharts);
                 sendTfRequest();
             }
         }
