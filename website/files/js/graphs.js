@@ -114,7 +114,7 @@ function reDrawChart(chart, data) {
 function trimAppendData(data, addition){
     var endOfData = data[data.length-1].x
 
-    for (let i = 0; i < addition.length; i++) {
+    for (var i = 0; i < addition.length; i++) {
         if(String(new moment(addition[i].Date)) == String(endOfData)){
             // remove everything before endOfData
             addition.splice(0, i);
@@ -122,4 +122,11 @@ function trimAppendData(data, addition){
         }
     }
     return addition
+}
+
+function trimOld(data, maxAge){
+    while (!(moment().diff(data[0].x) < maxAge)){
+        data.shift()
+    }
+    return data
 }

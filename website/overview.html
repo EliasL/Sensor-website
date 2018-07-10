@@ -140,7 +140,7 @@
                 });
                 window['chart' + currentLoadingIndex].update();
             }
-
+            chart.data.datasets[0].data = trimOld(chart.data.datasets[0].data, moment.duration(10, 'minutes'))
             //Update
             window['chart' + currentLoadingIndex].update();
 
