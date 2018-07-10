@@ -3,14 +3,14 @@ var ws;
 function sendTimeframeRequest(sensorID, timeframe) {
     tableName = "sensor_"+sensorID
     dates = timeframeToArg(timeframe)
-    sendMessage("get, elwatchTableTimeframe, " + tableName + ", " + dates[0] + ", " + dates[1]);
+    sendMessage("get, tableTimeframe, " + tableName + ", " + dates[0] + ", " + dates[1]);
 }
 
-function checkSocket(message, handleFunc){
+function checkSocket(handleFunc){
     //Check if socet is open
     if(ws == null){
         ws = new WebSocket("wss://lowpowersensor.tk:8080");
-        ws.addEventListener(message, handleFunc);
+        ws.addEventListener('message', handleFunc);
         ws.onopen = function(evt) {
             console.log("OPEN");
         }
@@ -25,12 +25,8 @@ function checkSocket(message, handleFunc){
 }
 
 function sendMessage(msg){
-    console.log("Attempt send message")
-
-    console.log("Waiting for socket...")
     // Wait until the state of the socket is not ready and send the message when it is...
     waitForSocketConnection(ws, function(){
-        console.log("Sending...")
         ws.send(msg);
     });
 }
@@ -52,8 +48,6 @@ function waitForSocketConnection(socket, callback){
 }
 
 function reciveResponse(evt) {
-    console.log("Request recieved");
-
     try {
         var jsonData = JSON.parse(evt.data);
     }
@@ -104,13 +98,24 @@ function timeframeToArg(timeframe) {
         return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
     }
 
-    var oneMinute = 60 * 1000;
+    var oneSecond = 1000;
+    var oneMinute = 60 * oneSecond;
     var oneHour = 60 * oneMinute;
     var oneDay = 24 * oneHour;
     var oneWeek = 7 * oneDay;
     var oneMonth = 30 * oneDay;
 
     switch (timeframe) {
+        case "Ten seconds":
+            string1 = format(new Date((new Date) - 10 * oneSecond));
+            string2 = format(new Date);
+            break;
+        
+        case "Ten minutes":
+        string1 = format(new Date((new Date) - 10 * oneMinute));
+        string2 = format(new Date);
+        break;
+
         case "One hour":
             string1 = format(new Date((new Date) - oneHour));
             string2 = format(new Date);

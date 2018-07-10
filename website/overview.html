@@ -84,42 +84,70 @@
     <!-- Graphs -->
     <script>
         var currentLoadingIndex = 0;
-        bigChart = false;
+        var firstLoad = true;
         
-        checkSocket("message", handleNewData);
+        checkSocket(updateCharts);
 
         function sendTfRequest() {
-            sendTimeframeRequest(sensors[currentLoadingIndex].id, "One hour");
+            sendTimeframeRequest(sensors[currentLoadingIndex].id, "Ten minutes");
+        }
+        
+        function sendUpdateRequest(){
+            if(currentLoadingIndex == sensors.length){ // this makes sure that the previous update is done in case of slow internett
+                firstLoad = false
+                currentLoadingIndex = 0;
+                sendTimeframeRequest(sensors[currentLoadingIndex].id, "Ten seconds");
+            }
         }
 
         window.onload = function () {
+            createCharts();
             sendTfRequest();
         }
 
+        setInterval(sendUpdateRequest, 2000)
+
+        function createCharts(){
+            for (var i = 0; i< sensors.length; i++){
+                var ctx = document.getElementById('canvas' + i).getContext('2d');
+                window['chart' + i] = new Chart(ctx, getChart(false, 1000, 0.4, false));
+            }
+        }
+
         function updateCharts(evt) {
-            jsonData = reciveResponse(evt);
-
-            //Create deep copy of chart
-            var chartCopy = jQuery.extend(true, {}, getChart(false, 1000, 0.4, false));
-
-            //Load chart with data
-            for (var i = 0; i < jsonData.length; i++) {
-                chartCopy.data.datasets[0].data.push({
-                    x: new moment(jsonData[i].Date),
-                    y: jsonData[i].Value
-                });
+            data = reciveResponse(evt);
+            if (data.length == 0){
+                //Prepare to load the next one
+                currentLoadingIndex += 1;
+                if (currentLoadingIndex < sensors.length) {
+                    checkSocket(updateCharts);
+                    sendTfRequest();
+                }
+                return
             }
 
-            //Add to window
-            var ctx = document.getElementById('canvas' + currentLoadingIndex).getContext('2d');
-            window['chart' + currentLoadingIndex] = new Chart(ctx, chartCopy);
+            chart = window['chart' + currentLoadingIndex]
 
+            //Load chart with data
+            if (!firstLoad){
+                data = trimAppendData(chart.data.datasets[0].data, data)
+            }
+
+            for (var i = 0; i < data.length; i++) {
+                chart.data.datasets[0].data.push({
+                    x: new moment(data[i].Date),
+                    y: data[i].Value
+                });
+                window['chart' + currentLoadingIndex].update();
+            }
+
+            //Update
             window['chart' + currentLoadingIndex].update();
 
             //Prepare to load the next one
             currentLoadingIndex += 1;
             if (currentLoadingIndex < sensors.length) {
-                checkSocket("message", updateCharts);
+                checkSocket(updateCharts);
                 sendTfRequest();
             }
         }

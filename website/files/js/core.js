@@ -167,7 +167,6 @@ var sensorFolders = [
 
 
 var sensors = getSensors(sensorFolders);
-console.log(sensors);
 function getSensors(sensorFolders){
     sensors = [];
     sensorFolders.forEach(folder => {

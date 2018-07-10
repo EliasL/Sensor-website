@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
@@ -67,7 +66,7 @@ func getTableData(tableName, date1, date2 string) ([]byte, error) {
 func sendMessage(c *websocket.Conn, mt int, messageType string, args []string) {
 	var message []byte
 	var err error
-	if messageType == "elwatchTableTimeframe" {
+	if messageType == "tableTimeframe" {
 		message, err = getTableData(args[0], args[1], args[2])
 		checkErr(err)
 	}
@@ -95,15 +94,6 @@ func handleCommand(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-}
-
-func getFirstFilePathFrom(folderPath string) string {
-	files, err := ioutil.ReadDir(folderPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return folderPath + "/" + files[0].Name()
 }
 
 var ip = ":8080"

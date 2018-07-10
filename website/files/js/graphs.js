@@ -1,4 +1,4 @@
-var timeFormat = 'DD/MM/YYYY HH:mm';
+var timeFormat = 'DD/MM/YYYY HH:mm:ss';
 var color = Chart.helpers.color;
 
 function getChart(bigChartBool, animationDurationMs, curving, zero) {
@@ -83,9 +83,25 @@ function resetChartZoom(chart) {
     chart.resetZoom()
 }
 
-function reDrawChart(chart, data) {
+function clearChart(chart){
     chart.data.datasets[0].data = [];
-    console.log(data.length)
+    return chart
+}
+
+function reDrawChart(chart, data) {
+    // Check if the data only spans a short time, if it's short, it means only append data, if it's long, replace data
+    if (data.length == 0){
+        return chart
+    }
+    var oldest = new moment(data[0].Date)
+    var newest = new moment(data[data.length-1].Date)
+    var duration = moment.duration(newest.diff(oldest));
+    if (duration < moment.duration(1, 'minutes')){
+        data = trimAppendData(chart.data.datasets[0].data, data)
+    }else{
+        chart.data.datasets[0].data = [];
+    }
+
     for (var i = 0; i < data.length; i++) {
         chart.data.datasets[0].data.push({
             x: new moment(data[i].Date),
@@ -93,4 +109,17 @@ function reDrawChart(chart, data) {
         });
     }
     return chart
+}
+
+function trimAppendData(data, addition){
+    var endOfData = data[data.length-1].x
+
+    for (let i = 0; i < addition.length; i++) {
+        if(String(new moment(addition[i].Date)) == String(endOfData)){
+            // remove everything before endOfData
+            addition.splice(0, i);
+            return addition
+        }
+    }
+    return addition
 }
