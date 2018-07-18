@@ -9,7 +9,7 @@
     <meta name="author" content="Elias Lundheim">
     <link rel="icon" href="files/images/icon.png">
 
-    <title>Sensorer</title>
+    <title>Sensors</title>
 
     <!-- Bootstrap core CSS -->
     <link href="files/js/Bootstrap/bootstrap.css" rel="stylesheet">
@@ -85,18 +85,20 @@
     <script>
         var currentLoadingIndex = 0;
         var firstLoad = true;
+        var timeframe = "Ten minutes";
         
         checkSocket(updateCharts);
 
         function sendTfRequest() {
-            sendTimeframeRequest(sensors[currentLoadingIndex].id, "Ten minutes");
+            sendTimeframeRequest(sensors[currentLoadingIndex].id, timeframe);
         }
         
-        function sendUpdateRequest(){
+        function startUpdate(){
             if(currentLoadingIndex == sensors.length){ // this makes sure that the previous update is done in case of slow internett
                 firstLoad = false
+                timeframe = "Ten seconds";
                 currentLoadingIndex = 0;
-                sendTimeframeRequest(sensors[currentLoadingIndex].id, "Ten seconds");
+                sendTfRequest();
             }
         }
 
@@ -105,7 +107,7 @@
             sendTfRequest();
         }
 
-        setInterval(sendUpdateRequest, 2000)
+        setInterval(startUpdate, 2000)
 
         function createCharts(){
             for (var i = 0; i< sensors.length; i++){
@@ -140,7 +142,9 @@
                 });
                 window['chart' + currentLoadingIndex].update();
             }
+            // Check if the chart already contains some of the new data.
             chart.data.datasets[0].data = trimOld(chart.data.datasets[0].data, moment.duration(10, 'minutes'))
+
             //Update
             window['chart' + currentLoadingIndex].update();
 

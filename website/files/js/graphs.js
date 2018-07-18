@@ -89,10 +89,12 @@ function clearChart(chart){
 }
 
 function reDrawChart(chart, data) {
-    // Check if the data only spans a short time, if it's short, it means only append data, if it's long, replace data
+    //If data is empty, don't do anything
     if (data.length == 0){
         return chart
     }
+    
+    // Check if the data only spans a short time, if it's short, it means only append data, if it's long, replace data. Not a good solution :/ sorry if this becomes a problem
     var oldest = new moment(data[0].Date)
     var newest = new moment(data[data.length-1].Date)
     var duration = moment.duration(newest.diff(oldest));
@@ -102,6 +104,7 @@ function reDrawChart(chart, data) {
         chart.data.datasets[0].data = [];
     }
 
+    //Turn data into propper chart datapoints, and push them to the chart
     for (var i = 0; i < data.length; i++) {
         chart.data.datasets[0].data.push({
             x: new moment(data[i].Date),

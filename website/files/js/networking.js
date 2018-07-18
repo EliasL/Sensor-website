@@ -7,7 +7,10 @@ function sendTimeframeRequest(sensorID, timeframe) {
 }
 
 function checkSocket(handleFunc){
-    //Check if socet is open
+    //Sometimes, if there is an error in the backend, or with the data from the database,
+    //the socket is closed, so we check if it has been closed and open a new one if needed
+
+    //Check if socket is open
     if(ws == null){
         ws = new WebSocket("wss://lowpowersensor.tk:8080");
         ws.addEventListener('message', handleFunc);
@@ -60,6 +63,11 @@ function reciveResponse(evt) {
     return jsonData;
 }
 
+
+// If there are many datapoints in the chart, say 3000+, depending on the computer, the chart might become laggy.
+// This data condensing function doesn't loose any significant information, and often drastically reduces the number of datapoints.
+// It removes the middle value if the values to the right and left of it are the same, but using slopes instead of the way i just described
+// In retrospect, that method might just be better and easier...
 function condenseData(jsonData){
     //Check if data is empty
     if(jsonData.length == 0){

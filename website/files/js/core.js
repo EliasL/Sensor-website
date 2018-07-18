@@ -158,10 +158,10 @@ var sensorFolders = [
     ]},
 
     {folderName: "Telenor", sensors: [
-         {name: "Node 1", id: "357517080049085"}
+         {name: "Node 1",         id: "357517080049085"}
     ]},
-    {folderName: "The Things Netowrk", sensors:[
-        {name: "Power Compare", id: "power_compare"}
+    {folderName: "The Things Network", sensors:[
+        {name: "Power Compare",   id: "power_compare"}
     ]}
 ];
 
