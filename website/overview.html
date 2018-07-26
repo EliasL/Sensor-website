@@ -61,7 +61,7 @@
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
             <div class="container-fluid">
 
-                <div id="sensorGrid"></div>
+                <div id="Overview"></div>
 
             </div>
     </main>
@@ -76,7 +76,7 @@
     <script src="files/js/graphs.js"></script>
     
     <script>
-        createGridOnOverview();
+        createOverview();
         createSidebar();
         folderLogic();
     </script>
@@ -111,8 +111,12 @@
 
         function createCharts(){
             for (var i = 0; i< sensors.length; i++){
-                var ctx = document.getElementById('canvas' + i).getContext('2d');
-                window['chart' + i] = new Chart(ctx, getChart(false, 1000, 0.4, false));
+
+                var ctx = document.getElementById('canvas' + (i * 2)).getContext('2d');
+                window['chart' + (i*2)] = new Chart(ctx, getChart(window.chartColors.blue, true, 1000, 0.4, false, "Sensor value (" + sensors[i].unit + ")"));
+
+                var ctx = document.getElementById('canvas' + (i * 2 + 1)).getContext('2d');
+                window['chart' + (i*2 + 1)] = new Chart(ctx, getChart(window.chartColors.yellow, true, 1000, 0.4, false, "Power usage (nWh)"));
             }
         }
 
@@ -128,7 +132,7 @@
                 return
             }
 
-            chart = window['chart' + currentLoadingIndex]
+            chart = window['chart' + currentLoadingIndex*2]
 
             //Load chart with data
             if (!firstLoad){
@@ -140,13 +144,36 @@
                     x: new moment(data[i].Date),
                     y: data[i].Value
                 });
-                window['chart' + currentLoadingIndex].update();
+                window['chart' + currentLoadingIndex*2].update();
             }
             // Check if the chart already contains some of the new data.
             chart.data.datasets[0].data = trimOld(chart.data.datasets[0].data, moment.duration(10, 'minutes'))
 
             //Update
-            window['chart' + currentLoadingIndex].update();
+            window['chart' + currentLoadingIndex*2].update();
+
+
+            //Temporary just fill the power graph with the same data
+
+            chart = window['chart' + (currentLoadingIndex*2+1)]
+
+            //Load chart with data
+            if (!firstLoad){
+                data = trimAppendData(chart.data.datasets[0].data, data)
+            }
+
+            for (var i = 0; i < data.length; i++) {
+                chart.data.datasets[0].data.push({
+                    x: new moment(data[i].Date),
+                    y: data[i].Value
+                });
+                window['chart' + (currentLoadingIndex*2+1)].update();
+            }
+            // Check if the chart already contains some of the new data.
+            chart.data.datasets[0].data = trimOld(chart.data.datasets[0].data, moment.duration(10, 'minutes'))
+
+            //Update
+            window['chart' + (currentLoadingIndex*2+1)].update();
 
             //Prepare to load the next one
             currentLoadingIndex += 1;

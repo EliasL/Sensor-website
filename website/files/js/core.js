@@ -1,26 +1,67 @@
 
-// GRID
+// Overview
 //#region
-function getGraph(name, index) {
+function getGraphColumn(dataGraph, powerGraph, name, index){
     var column = document.createElement("div");
-    column.className = "col-md-4";
+    column.className = "col-md-6";
 
+    column.appendChild(dataGraph);
+    column.appendChild(powerGraph);
+    return column;
+}
+
+function getAbout(item){
+    var col= document.createElement("div");
+    col.className = "col-md-6";
+
+    var top = document.createElement("div");
+    top.className = "page-header";
+
+    var topRow = document.createElement("div");
+    topRow.className = "row";
+
+    cCol = document.createElement("div");
+    cCol.className = "col-md-5";
     var href = document.createElement("a");
-    href.setAttribute("href", "sensor.html#" + index);
+    href.setAttribute("href", item.company.website);
+    var company = document.createElement("h5");
+    company.innerHTML = "Company: " + item.company.name;
+    href.className="pull-left";
+    href.appendChild(company);
+    cCol.appendChild(href);
+    company = cCol;
 
-    var header = document.createElement("h2");
-    header.align = "center";
-    header.innerHTML = name;
 
+    tCol = document.createElement("div");
+    tCol.className = "col-md-5";
+    var href = document.createElement("a");
+    href.setAttribute("href", item.tecnology.website);
+    var tecnology = document.createElement("h5");
+    tecnology.innerHTML = "Tecnology: " + item.tecnology.name;
+    tecnology.className="text-right";
+    href.className="pull-right";
+    href.appendChild(tecnology);
+    tCol.appendChild(href);
+    tecnology = tCol;
+
+    var about = document.createElement("div");
+    about.innerHTML = item.about;
+    about.align = "left";
+
+    topRow.appendChild(company);
+    topRow.appendChild(tecnology);
+    top.appendChild(topRow);
+    col.appendChild(top);
+    col.appendChild(about);
+    return col;
+}
+
+function getGraph(index) {
     var canvas = document.createElement("canvas");
     canvas.id = "canvas" + index;
     canvas.align = "center";
     canvas.className = "chartjs-render-monitor";
-
-    href.appendChild(header);
-    column.appendChild(href);
-    column.appendChild(canvas);
-    return column;
+    return canvas;
 }
 
 function getRow() {
@@ -29,20 +70,18 @@ function getRow() {
     return row;
 }
 
+
+
 function getSpacing() {
     var space = document.createElement("hr");
     space.className = "custom-space";
     return space;
 }
 
-function addGraphGrid(sensors, parentID) {
-    var itemsPerRow = 3;
-    var names = [];
-    for (var i = 0; i < sensors.length; i++) {
-        names.push(sensors[i].name);
-    }
+function addOverview(sensors, parentID) {
+    var itemsPerRow = 1;
 
-    var nrItems = names.length;
+    var nrItems = sensors.length;
 
     for (var i = 0; i < nrItems / itemsPerRow; i++) {
 
@@ -56,7 +95,28 @@ function addGraphGrid(sensors, parentID) {
             }
             //Add item
             else {
-                row.appendChild(getGraph(names[index], index));
+                var col = document.createElement("div");
+                col.className = "col-md-10";
+                var subRow = getRow();
+
+                var href = document.createElement("a");
+                href.setAttribute("href", "sensor.html#" + index);
+            
+                var header = document.createElement("h2");
+                header.align = "center";
+                header.innerHTML = sensors[index].name;
+                header.className = "pb-5";
+
+                href.appendChild(header);
+                col.appendChild(href);
+
+                dataGraph = getGraph(index * 2);
+                powerGraph = getGraph(index * 2 + 1);
+                subRow.appendChild(getGraphColumn(dataGraph, powerGraph, sensors[index].name, index));
+                console.log(sensors[index]);
+                subRow.appendChild(getAbout(sensors[index].about))
+                col.appendChild(subRow);
+                row.appendChild(col);
             }
         }
         //Add row
@@ -109,8 +169,8 @@ function getSidebarItem(name, link) {
 }
 
 
-var itemIndex = 0;
-function getFolder(folderName, folderContent){
+var sensorIndex = 0;
+function getFolder(name, folderContent){
     
     var folder = document.createElement("li");
     folder.className = "list-unstyled";
@@ -118,12 +178,12 @@ function getFolder(folderName, folderContent){
     var link = document.createElement("a");
     link.href = "#";
     link.className ="dropdown-toggle nav-link";
-    link.innerHTML = folderName;
+    link.innerHTML = name;
     
     var content = document.createElement("ul");
     folderContent.forEach(folderDataItem => {
-        content.appendChild(getSidebarItem(folderDataItem.name, "sensor.html#" + itemIndex));
-        itemIndex += 1;
+        content.appendChild(getSidebarItem(folderDataItem.name, "sensor.html#" + sensorIndex));
+        sensorIndex += 1;
     });
 
     folder.appendChild(link);
@@ -132,22 +192,24 @@ function getFolder(folderName, folderContent){
     return folder;
 }
 
-function getParentFolder(folderName, folderContent){
+function getParentFolder(name, folderContent){
     var folder = document.createElement("li");
     folder.className = "list-unstyled";
 
     var link = document.createElement("a");
     link.href = "#";
     link.className ="dropdown-toggle nav-link";
-    link.innerHTML = folderName;
+    link.innerHTML = name;
     
     var content = document.createElement("ul");
     folderContent.forEach(folderDataItem => {
-        if("name" in folderDataItem){ // It's an item
-            content.appendChild(getSidebarItem(folderDataItem.name, "sensor.html#" + itemIndex));
-            itemIndex += 1;
-        } else if("folderName" in folderDataItem){ // It's a folder
-            content.appendChild(getParentFolder(folderDataItem.folderName, folderDataItem.content));
+        if(folderDataItem.type == "sensor"){
+            content.appendChild(getSidebarItem(folderDataItem.name, "sensor.html#" + sensorIndex));
+            sensorIndex += 1;
+        } else if(folderDataItem.type == "powerInfo"){
+            content.appendChild(getSidebarItem(folderDataItem.name, "powerInfo.html#" + folderDataItem.name));
+        } else if(folderDataItem.type == "folder"){
+            content.appendChild(getParentFolder(folderDataItem.name, folderDataItem.content));
         }
     });
 
@@ -167,55 +229,82 @@ function addNavBar(sidebarFolders, parentID) {
         sidebar.firstChild.
         firstChild.
         firstChild.
-        firstChild.appendChild(getParentFolder(folder.folderName, folder.content));
+        firstChild.appendChild(getParentFolder(folder.name, folder.content));
     });
 
     document.getElementById(parentID).appendChild(sidebar);
 }
 //#endregion
 
+
+var elwatchAbout = {
+    company: {name: "Elwatch", website:"https://neuronsensors.com"},
+    tecnology: {name: "SI1083 propitary fx radio", website:"https://www.silabs.com/products/wireless/proprietary/si10xx-sub-ghz/device.si1083"},
+    about: "Elwatch produces small blue boxes that all have one sensor each. They are very simple for anyone to use, and are mainly for general monitorisation, but can be implemented in more complex systems. The so called Neurons are fully functional and a well made product. Web services however, are sill in development. Each neuron has an estimated lifetime of 15 years."};
+
+var telenorAbout = {
+    company: {name: "Telenor", website:"https://docs.exploratory.engineering/"}, 
+    tecnology: {name: "NarowBand IoT", website:"https://www.telenor.no/bedrift/iot/narrowband/?gclid=EAIaIQobChMI6oaXtcS83AIVR-WaCh1g-QExEAAYASAAEgJDNfD_BwE&s_kwcid=AL!285!3!200395911548!b!!g!!%2Bnb%20%2Biot%20%2Btelenor&ef_id=W1iG2gAAB3jMgxN_:20180726101537:s"}, 
+    about: "Telenors Exploratory Engineering are in the process of developing this NB-IoT system. As such, there is currently limited suport and funcionallity. There is for example currently no way to request data within a timeframe, you download all the data you have collected every single time you want to check if there is new data available. This is expected to change."};
+
+var TTNAbout = {
+    company: {name: "The Things Network", website:"https://www.thethingsnetwork.org/"}, 
+    tecnology: {name: "LoRaWAN", website:"https://www.lora-alliance.org/about-lorawan"}, 
+    about: "The Things Network has a very well implemented hardware and software datastructure. With a pleasing and well structured online dashboard, and relatively simple API, it is a good product. Encoding and decoding is left for the user to do themselves which creates useless complication for some, but perhaps deerly needed custom optimized data commpression for others."};
+
+
 var sidebarFolders = [ 
-    {folderName: "Data graphs", content: [
-        {folderName: "El-watch", content: [
-            {name: "Magnet 1",        id: "20006040"},
-            {name: "Magnet 2",        id: "20006039"},
-            {name: "Light",           id: "20004700"},
-            {name: "Surface temp 1",  id: "20005880"},
-            {name: "Surface temp 2",  id: "20005883"},
-            {name: "Humidity",        id: "20004722"},
-            {name: "Air temp 1",      id: "20004874"},
-            {name: "Air temp 2",      id: "20004936"}
+    {name: "Data graphs", type: "folder", content: [
+        {name: "El-watch", type: "folder", content: [
+            /*
+            {name: "Magnet 1",       type: "sensor", id: "20006040", unit: "",  about: elwatchAbout},
+            {name: "Magnet 2",       type: "sensor", id: "20006039", about: elwatchAbout},
+            {name: "Light",          type: "sensor", id: "20004700", about: elwatchAbout},
+            {name: "Surface temp 1", type: "sensor", id: "20005880", about: elwatchAbout},
+            {name: "Surface temp 2", type: "sensor", id: "20005883", about: elwatchAbout},
+            {name: "Humidity",       type: "sensor", id: "20004722", about: elwatchAbout},
+            */
+            {name: "Air temp 1",     type: "sensor", id: "20004874", unit:"°C", about: elwatchAbout},
+            //{name: "Air temp 2",     type: "sensor", id: "20004936", about: elwatchAbout}
         ]},
 
-        {folderName: "Telenor", content: [
-            {name: "Node 1",         id: "357517080049085"}
+        {name: "Telenor", type: "folder", content: [
+            {name: "Node 1", type: "sensor", id: "357517080049085", unit:"°C", about: telenorAbout}
         ]},
-        {folderName: "The Things Network", content:[
-            {name: "Temperature reader",   id: "temp_reader1"}
+        {name: "The Things Network", type: "folder", content:[
+            {name: "Temperature reader", type: "sensor", id: "temp_reader1", unit:"°C", about: TTNAbout}
         ]}
+    ]},
+    {name: "Power usage", content:[
+        {name: "El-watch", type: "powerInfo"},
+
+        {name: "Telenor", type: "powerInfo"},
+        {name: "The Things Network", type: "powerInfo"}
     ]}
 ];
 
 
-var sensors = getAllContent(sidebarFolders);
+var sensors = getAllSensors(sidebarFolders);
 
-function getAllContent(folders){
+function getAllSensors(folders){
     const items = [];
     folders.forEach(item =>{
-        if("content" in item){
-            getAllContent(item.content).forEach(childItem =>{
+        if(item.type == "folder"){
+            getAllSensors(item.content).forEach(childItem =>{
                 items.push(childItem);
             })
         } else{
-            items.push(item);
+            if(item.type == "sensor"){
+                items.push(item);
+            }
         }
     });
     return items;
 }
 
-function createGridOnOverview() {
-    var parent = "sensorGrid";
-    addGraphGrid(sensors, parent);
+function createOverview() {
+    var parent = "Overview";
+    addOverview(sensors, parent);
 }
 
 function createSidebar() {

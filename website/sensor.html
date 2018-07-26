@@ -192,7 +192,7 @@
         //Variables
         var timeframe = "Ten minutes"
         var ctx = document.getElementById('canvas').getContext('2d');
-        window.chart = new Chart(ctx, getChart(true, 1000, 0.0, true));
+        window.chart = new Chart(ctx, getChart(window.chartColors.blue, true, 1000, 0.4, true, "Sensor value ("+sensors[getHash()].unit+")"));
         var loadingData = false;
         var chartData = [];
 

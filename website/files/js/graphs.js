@@ -1,18 +1,21 @@
 var timeFormat = 'DD/MM/YYYY HH:mm:ss';
 var color = Chart.helpers.color;
 
-function getChart(bigChartBool, animationDurationMs, curving, zero) {
+function getChart(lineColor, bigChartBool, animationDurationMs, curving, zero, yAxisName) {
     var chart = {
         type: 'line',
         data: {
             datasets: [{
-                backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
-                borderColor: window.chartColors.blue,
+                backgroundColor: lineColor,
+                borderColor: lineColor,
                 fill: false,
                 data: [],
             }]
         },
         options: {
+            layout:{
+                padding: 20
+            },
             elements: {
                 line: {
                     tension: curving
@@ -51,7 +54,7 @@ function getChart(bigChartBool, animationDurationMs, curving, zero) {
                     },
                     scaleLabel: {
                         display: bigChartBool,
-                        labelString: 'Sensor value',
+                        labelString: yAxisName,
                         
                     }
                 }]
