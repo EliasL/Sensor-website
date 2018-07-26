@@ -63,36 +63,6 @@ function reciveResponse(evt) {
     return jsonData;
 }
 
-
-// If there are many datapoints in the chart, say 3000+, depending on the computer, the chart might become laggy.
-// This data condensing function doesn't loose any significant information, and often drastically reduces the number of datapoints.
-// It removes the middle value if the values to the right and left of it are the same, but using slopes instead of the way i just described
-// In retrospect, that method might just be better and easier...
-function condenseData(jsonData){
-    //Check if data is empty
-    if(jsonData.length == 0){
-        return jsonData
-    }
-    previousValue = jsonData[1].Value;
-    currentSlope = jsonData[0].Value - jsonData[1].Value;
-    previousSlope = 0;
-    newData = [jsonData[0]];
-    for (index = 2; index < jsonData.length; index++) {
-        previousSlope = currentSlope;
-        currentSlope = jsonData[index].Value - previousValue;
-
-        //Check change sign of slopes
-        //fix this
-        if(currentSlope*previousSlope<0 || (currentSlope == 0) ^ (previousSlope == 0)) {
-            newData.push(jsonData[index-1]);
-        }
-        previousValue = jsonData[index].Value;   
-    }
-    newData.push(jsonData[jsonData.length-1]);
-    return newData;
-}
-
-
 function timeframeToArg(timeframe) {
 
     function format(d) {

@@ -133,3 +133,31 @@ function trimOld(data, maxAge){
     }
     return data
 }
+
+
+// If there are many datapoints in the chart, say 3000+, depending on the computer, the chart might become laggy.
+// This data condensing function doesn't loose any significant information (The lines are identical),
+// and often drastically reduces the number of datapoints.
+function condenseData(jsonData){
+    //Check if data is empty
+    if(jsonData.length == 0){
+        return jsonData
+    }
+    previousValue = jsonData[1].Value;
+    currentSlope = jsonData[0].Value - jsonData[1].Value;
+    previousSlope = 0;
+    newData = [jsonData[0]];
+    for (index = 2; index < jsonData.length; index++) {
+        previousSlope = currentSlope;
+        currentSlope = jsonData[index].Value - previousValue;
+
+        //Check change sign of slopes
+        //fix this
+        if(currentSlope*previousSlope<0 || (currentSlope == 0) ^ (previousSlope == 0)) {
+            newData.push(jsonData[index-1]);
+        }
+        previousValue = jsonData[index].Value;   
+    }
+    newData.push(jsonData[jsonData.length-1]);
+    return newData;
+}

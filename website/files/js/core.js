@@ -107,21 +107,24 @@ function getSidebarItem(name, link) {
 
     return navItem;
 }
+
+
+var itemIndex = 0;
 function getFolder(folderName, folderContent){
     
     var folder = document.createElement("li");
-        folder.className = "list-unstyled";
+    folder.className = "list-unstyled";
 
-        var link = document.createElement("a");
-        link.href = "#";
-        link.className ="dropdown-toggle nav-link";
-        link.innerHTML = folderName;
-        
-        var content = document.createElement("ul");
-        folderContent.forEach(folderDataItem => {
-            content.appendChild(getSidebarItem(folderDataItem.name, "sensor.html#" + itemIndex));
-            itemIndex += 1;
-        });
+    var link = document.createElement("a");
+    link.href = "#";
+    link.className ="dropdown-toggle nav-link";
+    link.innerHTML = folderName;
+    
+    var content = document.createElement("ul");
+    folderContent.forEach(folderDataItem => {
+        content.appendChild(getSidebarItem(folderDataItem.name, "sensor.html#" + itemIndex));
+        itemIndex += 1;
+    });
 
     folder.appendChild(link);
     folder.appendChild(content);
@@ -129,52 +132,85 @@ function getFolder(folderName, folderContent){
     return folder;
 }
 
-var itemIndex = 0;
+function getParentFolder(folderName, folderContent){
+    var folder = document.createElement("li");
+    folder.className = "list-unstyled";
 
-function addNavBar(sensorFolders, parentID) {
+    var link = document.createElement("a");
+    link.href = "#";
+    link.className ="dropdown-toggle nav-link";
+    link.innerHTML = folderName;
+    
+    var content = document.createElement("ul");
+    folderContent.forEach(folderDataItem => {
+        if("name" in folderDataItem){ // It's an item
+            content.appendChild(getSidebarItem(folderDataItem.name, "sensor.html#" + itemIndex));
+            itemIndex += 1;
+        } else if("folderName" in folderDataItem){ // It's a folder
+            content.appendChild(getParentFolder(folderDataItem.folderName, folderDataItem.content));
+        }
+    });
+
+    folder.appendChild(link);
+    folder.appendChild(content);
+
+    return folder;
+}
+
+function addNavBar(sidebarFolders, parentID) {
+
+
     var sidebar = getSidebar();
 
-    sensorFolders.forEach(folder => {
+
+    sidebarFolders.forEach(folder => {
         sidebar.firstChild.
         firstChild.
         firstChild.
-        firstChild.appendChild(getFolder(folder.folderName, folder.sensors));
+        firstChild.appendChild(getParentFolder(folder.folderName, folder.content));
     });
 
     document.getElementById(parentID).appendChild(sidebar);
 }
 //#endregion
 
-var sensorFolders = [ 
-    {folderName: "El-watch", sensors: [
-        {name: "Magnet 1",        id: "20006040"},
-        {name: "Magnet 2",        id: "20006039"},
-        {name: "Light",           id: "20004700"},
-        {name: "Surface temp 1",  id: "20005880"},
-        {name: "Surface temp 2",  id: "20005883"},
-        {name: "Humidity",        id: "20004722"},
-        {name: "Air temp 1",      id: "20004874"},
-        {name: "Air temp 2",      id: "20004936"}
-    ]},
+var sidebarFolders = [ 
+    {folderName: "Data graphs", content: [
+        {folderName: "El-watch", content: [
+            {name: "Magnet 1",        id: "20006040"},
+            {name: "Magnet 2",        id: "20006039"},
+            {name: "Light",           id: "20004700"},
+            {name: "Surface temp 1",  id: "20005880"},
+            {name: "Surface temp 2",  id: "20005883"},
+            {name: "Humidity",        id: "20004722"},
+            {name: "Air temp 1",      id: "20004874"},
+            {name: "Air temp 2",      id: "20004936"}
+        ]},
 
-    {folderName: "Telenor", sensors: [
-         {name: "Node 1",         id: "357517080049085"}
-    ]},
-    {folderName: "The Things Network", sensors:[
-        {name: "Power Compare",   id: "power_compare"}
+        {folderName: "Telenor", content: [
+            {name: "Node 1",         id: "357517080049085"}
+        ]},
+        {folderName: "The Things Network", content:[
+            {name: "Temperature reader",   id: "temp_reader1"}
+        ]}
     ]}
 ];
 
 
-var sensors = getSensors(sensorFolders);
-function getSensors(sensorFolders){
-    sensors = [];
-    sensorFolders.forEach(folder => {
-        folder.sensors.forEach(sensor => {
-            sensors.push(sensor);
-        });
+var sensors = getAllContent(sidebarFolders);
+
+function getAllContent(folders){
+    const items = [];
+    folders.forEach(item =>{
+        if("content" in item){
+            getAllContent(item.content).forEach(childItem =>{
+                items.push(childItem);
+            })
+        } else{
+            items.push(item);
+        }
     });
-    return sensors;
+    return items;
 }
 
 function createGridOnOverview() {
@@ -184,7 +220,7 @@ function createGridOnOverview() {
 
 function createSidebar() {
     var parent = "sensorTab";
-    addNavBar(sensorFolders, parent);
+    addNavBar(sidebarFolders, parent);
 }
 
 // If createing toggle isn't done with a function, it appears as a checkbox while the page is loading
