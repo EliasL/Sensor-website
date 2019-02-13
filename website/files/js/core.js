@@ -113,7 +113,6 @@ function addOverview(sensors, parentID) {
                 dataGraph = getGraph(index * 2);
                 powerGraph = getGraph(index * 2 + 1);
                 subRow.appendChild(getGraphColumn(dataGraph, powerGraph, sensors[index].name, index));
-                console.log(sensors[index]);
                 subRow.appendChild(getAbout(sensors[index].about))
                 col.appendChild(subRow);
                 row.appendChild(col);
