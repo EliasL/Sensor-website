@@ -239,17 +239,17 @@ function addNavBar(sidebarFolders, parentID) {
 var elwatchAbout = {
     company: {name: "Elwatch", website:"https://neuronsensors.com"},
     tecnology: {name: "SI1083 propitary fx radio", website:"https://www.silabs.com/products/wireless/proprietary/si10xx-sub-ghz/device.si1083"},
-    about: "Elwatch produces small blue boxes that all have one sensor each. They are very simple for anyone to use, and are mainly for general monitorisation, but can be implemented in more complex systems. The so called Neurons are fully functional and a well made product. Web services however, are sill in development. Each neuron has an estimated lifetime of 15 years."};
+    about: "Elwatch produces small blue boxes that have one sensor each. They are simple and are mainly used to monitor almost anything, and can be implemented in complex systems. Each neuron has an estimated lifetime of 15 years."};
 
 var telenorAbout = {
     company: {name: "Telenor", website:"https://docs.exploratory.engineering/"}, 
     tecnology: {name: "NarowBand IoT", website:"https://www.telenor.no/bedrift/iot/narrowband/?gclid=EAIaIQobChMI6oaXtcS83AIVR-WaCh1g-QExEAAYASAAEgJDNfD_BwE&s_kwcid=AL!285!3!200395911548!b!!g!!%2Bnb%20%2Biot%20%2Btelenor&ef_id=W1iG2gAAB3jMgxN_:20180726101537:s"}, 
-    about: "Telenors Exploratory Engineering are in the process of developing this NB-IoT system. As such, there is currently limited suport and funcionallity. There is for example currently no way to request data within a timeframe, you download all the data you have collected every single time you want to check if there is new data available. This is expected to change."};
+    about: "Telenors Exploratory Engineering are in the process of developing this NB-IoT system. As such, there is currently limited support and functionality. There is for example currently no way to request data within a timeframe. Currently, the only option is to download all the data you have collected every time you want to check if there is new data available. This is expected to change."};
 
 var TTNAbout = {
     company: {name: "The Things Network", website:"https://www.thethingsnetwork.org/"}, 
     tecnology: {name: "LoRaWAN", website:"https://www.lora-alliance.org/about-lorawan"}, 
-    about: "The Things Network has a very well implemented hardware and software datastructure. With a pleasing and well structured online dashboard, and relatively simple API, it is a good product. Encoding and decoding is left for the user to do themselves which creates useless complication for some, but perhaps deerly needed custom optimized data commpression for others."};
+    about: "The Things Network has a very well implemented hardware and software data structure. With a thoroughly implemented online dashboard, and relatively simple API, it is a good product. Encoding and decoding is left for the user to do themselves which creates useless complication for some, but perhaps dearly needed custom optimized data compression for others."};
 
 
 var sidebarFolders = [ 
@@ -311,7 +311,7 @@ function createSidebar() {
     addNavBar(sidebarFolders, parent);
 }
 
-// If createing toggle isn't done with a function, it appears as a checkbox while the page is loading
+// If creating toggle isn't done with a function, it appears as a checkbox while the page is loading
 function createToggle(){
     var toggle = document.createElement("input");
     toggle.type="checkbox";
