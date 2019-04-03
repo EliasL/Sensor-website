@@ -11,4 +11,4 @@ This website is made to showcase various low power wireless sensors.
 
 ### Status
 
-The website and database is fully functioning.
+The website and database is currently down.
